@@ -1,5 +1,7 @@
 use std::{borrow::Cow, path::PathBuf};
 
+use std::process::Command;
+
 use cargo_metadata::camino::Utf8Path;
 use serde::{de::DeserializeOwned, Serialize};
 
@@ -52,6 +54,10 @@ pub trait RustcPlugin: Sized {
     compiler_args: Vec<String>,
     plugin_args: Self::Args,
   ) -> rustc_interface::interface::Result<()>;
+
+  /// Optionally modify the `cargo` command that launches rustc.
+  /// For example, you could pass a `--feature` flag here.
+  fn modify_cargo(&self, cargo: &mut Command, args: &Self::Args);
 }
 
 /// The name of the environment variable shared between the CLI and the driver.

@@ -83,6 +83,8 @@ pub fn cli_main<T: RustcPlugin>(plugin: T) {
     cmd.env("CFG_RELEASE", "");
   }
 
+  plugin.modify_cargo(&mut cmd, &args.args);
+
   let exit_status = cmd.status().expect("failed to wait for cargo?");
 
   exit(exit_status.code().unwrap_or(-1));
