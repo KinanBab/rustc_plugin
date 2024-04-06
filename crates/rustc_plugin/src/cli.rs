@@ -14,7 +14,7 @@ pub const SPECIFIC_CRATE: &str = "SPECIFIC_CRATE";
 pub const SPECIFIC_TARGET: &str = "SPECIFIC_TARGET";
 
 /// The top-level function that should be called in your user-facing binary.
-pub fn cli_main<T: RustcPlugin>(plugin: T) {
+pub fn cli_main<T: RustcPlugin>(plugin: T, toolchain: Option<&'static str>) {
   if env::args().any(|arg| arg == "-V") {
     println!("{}", plugin.version());
     return;
@@ -32,6 +32,9 @@ pub fn cli_main<T: RustcPlugin>(plugin: T) {
 
   let mut cmd = Command::new("cargo");
   cmd.stdout(Stdio::inherit()).stderr(Stdio::inherit());
+  if let Some(toolchain) = toolchain {
+    cmd.arg(toolchain);
+  }
 
   let mut path = env::current_exe()
     .expect("current executable path invalid")
